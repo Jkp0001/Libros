@@ -8,20 +8,28 @@
     <?php require 'conexion.php' ?>
 </head>
 <body>
-    <?php 
-        if($_SERVER["REQUEST_METHOD"] == "POST"){
-            $busqueda = $_POST["busqueda"];
-        
-            $sql = $conexion -> prepare("SELECT * FROM libros WHERE titulo LIKE CONCAT('%',?,'%');");
-            $sql -> bind_param("s",$busqueda);
-            $sql -> execute();
-            $resultado = $sql->get_result();
-        }
+<?php
+    $sql = $conexion -> prepare("SELECT * FROM libros");
+    $sql -> execute();
+    $resultado = $sql -> get_result();
     ?>
 
     <div class="container">
         <h1 class="text-center">Listado de Productos</h1> <!-- bootstrap -->
-        <table class="table table-striped" style="border: 1px solid black;">
+
+        <form action="productoBuscado.php" method="post" target="_blank">
+            <div class="row mb-3">
+                <div class="col-4">
+                    <input class="form-control" type="search" name="busqueda" placeholder="Eragon, El Quijote,..">
+                </div>
+
+                <div class="col-2">
+                    <input class="btn btn-primary" type="submit" value="Buscar">
+                </div>
+            </div>
+        </form>
+
+        <table class="table table-striped" style="border: 1px solid black">
             <thead class="table table-dark">
                 <tr>
                     <th>Título</th>
@@ -30,7 +38,6 @@
             </thead>
             <tbody>
                 <?php
-                if($_SERVER["REQUEST_METHOD"] == "POST"){
                     while ($fila = $resultado -> fetch_assoc()){
                 ?>
                     <tr>
@@ -38,11 +45,10 @@
                         <td><?php echo $fila["paginas"] ?></td>
                         <td><?php echo $fila["autor"] ?></td>
                     </tr>
-                    <?php } }?>
+                    <?php } ?>
             </tbody>
         </table>
     </div>
-
 </body>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </html>
